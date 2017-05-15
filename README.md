@@ -1,8 +1,40 @@
 # DemoUi
 Command line tool to access Android Demo Ui
 
+## Modes
+
+This tools has 2 modes:
+* Standart mode, application will evaluate all arguments, apply them and exit
+* Live mode, application starts to listen for supplied arguments and apply them. This mode helps to tweak options and receive fast feedback. To start it use `-l` argument, to exit from live mode: `-le`
+
+## Configuration
+Application supports saving/loading of configurations.
+```
+# Loads configuration for a file name `first.demoui`
+./demoui -cl first
+
+# Saves current configuration to a filename `second.demoui`
+./demoui -cs second
+```
+
+Configurations can be used with arguments:
+```
+./demoui -nwl 3 -cl first
+```
+Here `first` configuration will be used as a base. All supplied arguments will override base options.
+
+```
+# Loads `first` configuration, applies `-na 1` argument and saves this configuration to `second`
+./demoui -cl first -na 1 -cs second
+```
+
+Application saves/loads only files with `.demoui` extensions (which _can_ be omitted when typing).
+
 ## -h, --help
 All demo ui options are taken from [this](https://android.googlesource.com/platform/frameworks/base/+/android-6.0.0_r1/packages/SystemUI/docs/demo_mode.md) document
+
+All options have short and long names
+
 ```
 usage: demoui [-a <adb-path>] [-ad | -ae | -as <serial>]   [-bl <level>]
        [-bp <charging>] [-bs <style>] [-cf <file>] [-ch <hhmm> | -cm
