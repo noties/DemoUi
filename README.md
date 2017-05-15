@@ -30,6 +30,15 @@ Here `first` configuration will be used as a base. All supplied arguments will o
 
 Application saves/loads only files with `.demoui` extensions (which _can_ be omitted when typing).
 
+## Screenshot
+To make a screenshot add `-s` argument followed by a file name
+```
+./demoui -na 1 -s "1.png"
+
+# applies arguments, takes a screenshot and exits from demo mode
+./demoui -na 1 -ch 1012 -s "1.png" && demoui -e
+```
+
 ## -h, --help
 All demo ui options are taken from [this](https://android.googlesource.com/platform/frameworks/base/+/android-6.0.0_r1/packages/SystemUI/docs/demo_mode.md) document
 
