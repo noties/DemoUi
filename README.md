@@ -11,7 +11,7 @@ This tools has 2 modes:
 Application supports saving/loading of configurations.
 ```
 # Loads configuration for a file name `first.demoui`
-./demoui -cl first
+./demoui -cf first
 
 # Saves current configuration to a filename `second.demoui`
 ./demoui -cs second
@@ -19,13 +19,13 @@ Application supports saving/loading of configurations.
 
 Configurations can be used with arguments:
 ```
-./demoui -nwl 3 -cl first
+./demoui -nwl 3 -cf first
 ```
 Here `first` configuration will be used as a base. All supplied arguments will override base options.
 
 ```
 # Loads `first` configuration, applies `-na 1` argument and saves this configuration to `second`
-./demoui -cl first -na 1 -cs second
+./demoui -cf first -na 1 -cs second
 ```
 
 Application saves/loads only files with `.demoui` extensions (which _can_ be omitted when typing).
