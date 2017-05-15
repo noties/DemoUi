@@ -134,7 +134,6 @@ public class DemoUiController {
                 .argName("file")
                 .desc("Loads demo configuration from a file")
                 .longOpt("configuration-file")
-                .hasArg()
                 .build();
 
         final Option configurationSave = Option.builder("cs")
@@ -142,7 +141,13 @@ public class DemoUiController {
                 .argName("file")
                 .desc("Saves current demo configuration")
                 .longOpt("configuration-save")
-                .hasArg()
+                .build();
+
+        final Option screenshot = Option.builder("s")
+                .hasArg(true)
+                .argName("file")
+                .desc("Takes screenshot and saves it to <file>")
+                .longOpt("screenshot")
                 .build();
 
         options.addOption(help)
@@ -153,7 +158,8 @@ public class DemoUiController {
                 .addOptionGroup(liveGroup)
                 .addOptionGroup(demoGroup)
                 .addOption(configurationFile)
-                .addOption(configurationSave);
+                .addOption(configurationSave)
+                .addOption(screenshot);
     }
 
     private static void bars(@Nonnull Options options) {

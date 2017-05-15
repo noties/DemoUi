@@ -18,6 +18,7 @@ public class DemoUiState {
     private transient String loadConfiguration;
 
     private transient Boolean debug;
+    private transient String screenshot;
 
     public String adb() {
         return adb;
@@ -102,6 +103,15 @@ public class DemoUiState {
         return this;
     }
 
+    public String screenshot() {
+        return screenshot;
+    }
+
+    public DemoUiState screenshot(String screenshot) {
+        this.screenshot = screenshot;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "DemoUiState{" +
@@ -113,6 +123,8 @@ public class DemoUiState {
                 ", demoGlobalSettingEnabled=" + demoGlobalSettingEnabled +
                 ", saveConfiguration='" + saveConfiguration + '\'' +
                 ", loadConfiguration='" + loadConfiguration + '\'' +
+                ", debug=" + debug +
+                ", screenshot=" + screenshot +
                 '}';
     }
 }

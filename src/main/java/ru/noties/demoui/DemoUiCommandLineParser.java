@@ -30,6 +30,7 @@ abstract class DemoUiCommandLineParser {
         state.saveConfiguration(saveConfiguration(line));
 
         state.debug(debug(line));
+        state.screenshot(screenshot(line));
 
         return state;
     }
@@ -121,6 +122,16 @@ abstract class DemoUiCommandLineParser {
             debug = null;
         }
         return debug;
+    }
+
+    private static String screenshot(CommandLine line) {
+        final String out;
+        if (line.hasOption("s")) {
+            out = line.getOptionValue("s");
+        } else {
+            out = null;
+        }
+        return out;
     }
 
     private static DemoUiConfiguration configuration(CommandLine line) {

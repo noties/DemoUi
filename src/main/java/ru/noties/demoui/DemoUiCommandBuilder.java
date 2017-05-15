@@ -1,6 +1,7 @@
 package ru.noties.demoui;
 
 import ru.noties.demoui.options.*;
+import ru.noties.demoui.utils.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ public abstract class DemoUiCommandBuilder {
 
     private static final String ENABLE = "%1$s shell settings put global sysui_demo_allowed %2$d";
     private static final String ACTION = "%1$s shell am broadcast -a com.android.systemui.demo -e command %2$s";
+    private static final String SCREENCAP = "%1$s shell screencap -p \"/sdcard/%2$s\" && %1$s pull \"/sdcard/%2$s\" \"%3$s\" && %1$s shell rm \"/sdcard/%2$s\"";
 
     public static List<String> commands(DemoUiState state) {
 
@@ -16,6 +18,7 @@ public abstract class DemoUiCommandBuilder {
         final String adb = state.adb();
         final DemoUiConfiguration configuration = state.configuration();
         final Boolean demo = state.demoMode();
+        final String screenshot = state.screenshot();
 
         if (state.demoGlobalSettingEnabled() != null) {
             list.add(String.format(ENABLE, adb, state.demoGlobalSettingEnabled() ? 1 : 0));
@@ -36,6 +39,10 @@ public abstract class DemoUiCommandBuilder {
                 notifications(adb, configuration.notifications(), list);
                 status(adb, configuration.status(), list);
             }
+        }
+
+        if (!TextUtils.isEmpty(screenshot)) {
+            screenshot(adb, screenshot, list);
         }
 
         return list;
@@ -227,6 +234,15 @@ public abstract class DemoUiCommandBuilder {
                         + builder.toString();
                 list.add(command);
             }
+        }
+    }
+
+    private static void screenshot(String adb, String name, List<String> list) {
+        final String tmp = name + "_" + System.nanoTime();
+        final String command = String.format(SCREENCAP, adb, tmp, name);
+        final String[] parts = command.split("&&");
+        for (String part : parts) {
+            list.add(part.trim());
         }
     }
 
