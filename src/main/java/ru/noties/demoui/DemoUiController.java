@@ -19,21 +19,17 @@ public class DemoUiController {
     }
 
     public DemoUiState state(String[] arguments) {
-        return state(arguments, false);
-    }
-
-    public DemoUiState state(String[] arguments, boolean initial) {
         try {
-            return parse(parser.parse(options, arguments), initial);
+            return parse(parser.parse(options, arguments));
         } catch (Throwable t) {
-            t.printStackTrace();
+            System.err.println(t.getMessage());
             return null;
         }
     }
 
     @Nonnull
-    private static DemoUiState parse(CommandLine line, boolean initial) {
-        return DemoUiCommandLineParser.parse(line, initial);
+    private static DemoUiState parse(CommandLine line) {
+        return DemoUiCommandLineParser.parse(line);
     }
 
     private static Options createOptions() {

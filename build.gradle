@@ -11,7 +11,7 @@ version '1.0.0'
 
 mainClassName = 'ru.noties.demoui.DemoUi'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()

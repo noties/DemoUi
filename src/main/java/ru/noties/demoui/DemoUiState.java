@@ -11,7 +11,7 @@ public class DemoUiState {
     private transient boolean showHelp;
     // yep, we need 3 states: true/false/not present
     private transient Boolean isLive;
-    private transient boolean isDemoMode; // if have configuration || specific argument option
+    private transient Boolean isDemoMode; // if have configuration || specific argument option
     private Boolean demoGlobalSettingEnabled;
 
     private transient String saveConfiguration;
@@ -55,21 +55,21 @@ public class DemoUiState {
         return this;
     }
 
-    public boolean demoMode() {
+    public Boolean demoMode() {
         return isDemoMode;
     }
 
-    public DemoUiState demoMode(boolean demoMode) {
+    public DemoUiState demoMode(Boolean demoMode) {
         isDemoMode = demoMode;
         return this;
     }
 
-    public Boolean demoEnabled() {
+    public Boolean demoGlobalSettingEnabled() {
         return demoGlobalSettingEnabled;
     }
 
-    public DemoUiState demoEnabled(Boolean demoEnabled) {
-        this.demoGlobalSettingEnabled = demoEnabled;
+    public DemoUiState demoGlobalSettingEnabled(Boolean demoGlobalSettingEnabled) {
+        this.demoGlobalSettingEnabled = demoGlobalSettingEnabled;
         return this;
     }
 

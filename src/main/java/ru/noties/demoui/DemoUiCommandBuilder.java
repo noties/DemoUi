@@ -15,25 +15,27 @@ public abstract class DemoUiCommandBuilder {
         final List<String> list = new ArrayList<>();
         final String adb = state.adb();
         final DemoUiConfiguration configuration = state.configuration();
+        final Boolean demo = state.demoMode();
 
-        if (state.demoEnabled() != null) {
-            list.add(String.format(ENABLE, adb, state.demoEnabled() ? 1 : 0));
+        if (state.demoGlobalSettingEnabled() != null) {
+            list.add(String.format(ENABLE, adb, state.demoGlobalSettingEnabled() ? 1 : 0));
         }
 
-        if (configuration != null) {
-            bars(adb, configuration.bars(), list);
-            battery(adb, configuration.battery(), list);
-            clock(adb, configuration.clock(), list);
-            network(adb, configuration.network(), list);
-            notifications(adb, configuration.notifications(), list);
-            status(adb, configuration.status(), list);
-        }
-
-        // todo, when called with `le` (exit live), we still execute the `enter` command (and we do not want it)
-        if (list.size() == 0 && state.demoMode()) {
+        if (demo != null && demo) {
             list.add(String.format(ACTION, adb, "enter"));
-        } else if (!state.demoMode()) {
+        }
+
+        if (demo != null && !demo) {
             list.add(String.format(ACTION, adb, "exit"));
+        } else {
+            if (configuration != null) {
+                bars(adb, configuration.bars(), list);
+                battery(adb, configuration.battery(), list);
+                clock(adb, configuration.clock(), list);
+                network(adb, configuration.network(), list);
+                notifications(adb, configuration.notifications(), list);
+                status(adb, configuration.status(), list);
+            }
         }
 
         return list;

@@ -5,7 +5,6 @@ import org.apache.commons.cli.HelpFormatter;
 import ru.noties.demoui.utils.ProcessRedirect;
 import ru.noties.demoui.utils.TextUtils;
 
-import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -33,15 +32,13 @@ public class DemoUi {
         this.controller = controller;
         this.merger = new DemoUiStateMerger();
         this.persist = new DemoUiStatePersist();
-        this.state = controller.state(arguments, true);
+        this.state = controller.state(arguments);
         this.fullState = new DemoUiState();
     }
 
     private void run() {
 
         if (state != null) {
-
-            System.out.printf("load: `%s`, save: `%s`%n", state.loadConfiguration(), state.saveConfiguration());
 
             // if have load -> do it now
             if (!TextUtils.isEmpty(state.loadConfiguration())) {
@@ -133,8 +130,8 @@ public class DemoUi {
         final Runtime runtime = Runtime.getRuntime();
         final List<String> commands = DemoUiCommandBuilder.commands(state);
 
-        for (String command: commands) {
-            System.out.printf("command: %s%n", command);
+        for (String command : commands) {
+//            System.out.printf("command: %s%n", command);
             Process process = null;
             try {
                 process = runtime.exec(command);
@@ -142,7 +139,7 @@ public class DemoUi {
                 ProcessRedirect.redirect(process.getErrorStream());
                 process.waitFor();
             } catch (Throwable t) {
-                t.printStackTrace();
+                System.err.println(t.getMessage());
             } finally {
                 if (process != null) {
                     process.destroy();

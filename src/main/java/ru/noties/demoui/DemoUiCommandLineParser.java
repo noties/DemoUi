@@ -12,41 +12,20 @@ abstract class DemoUiCommandLineParser {
 
     private static Pattern PATTERN_CLOCK_HHMM = Pattern.compile("(\\d{2})(\\d{2})");
 
-    static DemoUiState parse(CommandLine line, boolean initial) {
+    static DemoUiState parse(CommandLine line) {
 
         // if we have `help`, then no need to evaluate configuration
         final DemoUiState state = new DemoUiState();
 
-        final DemoUiConfiguration configuration;
+        state.showHelp(help(line));
 
-        final boolean help = help(line);
-        state.showHelp(help);
-        if (!help) {
-            configuration = configuration(line);
-            state.configuration(configuration);
-        } else {
-            configuration = null;
-        }
-
-        final Boolean live = live(line);
-        if (live != null) {
-            state.live(live);
-        } else {
-            if (initial
-                    && configuration == null
-                    && !state.showHelp()) {
-                state.live(Boolean.TRUE);
-            }
-        }
-
-        // if we have configuration, then it's a demo mode anyway
-        final boolean demo = configuration != null
-                || demo(line);
-        state.demoMode(demo);
+        state.live(live(line));
+        state.demoMode(demo(line));
+        state.configuration(configuration(line));
 
         state.adb(adb(line));
         state.demoMode(demo(line));
-        state.demoEnabled(demoEnabled(line));
+        state.demoGlobalSettingEnabled(demoEnabled(line));
         state.loadConfiguration(loadConfiguration(line));
         state.saveConfiguration(saveConfiguration(line));
 
@@ -69,8 +48,16 @@ abstract class DemoUiCommandLineParser {
         return out;
     }
 
-    private static boolean demo(CommandLine line) {
-        return !line.hasOption("e") && !line.hasOption("le");
+    private static Boolean demo(CommandLine line) {
+        final Boolean out;
+        if (line.hasOption("e")) {
+            out = Boolean.FALSE;
+        } else if (line.hasOption("de")) {
+            out = Boolean.TRUE;
+        } else {
+            out = null;
+        }
+        return out;
     }
 
     private static String adb(CommandLine line) {
