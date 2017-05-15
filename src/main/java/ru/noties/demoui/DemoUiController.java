@@ -52,11 +52,12 @@ public class DemoUiController {
                 .longOpt("help")
                 .build();
 
-//        final Option debug = Option.builder("d")
-//                .hasArg(false)
-//                .desc("Enables printing of adb executed commands")
-//                .longOpt("debug")
-//                .build();
+        final Option debug = Option.builder("d")
+                .hasArg(true)
+                .argName("enable")
+                .desc("`1|true` enables printing of adb executed commands, everything else disables")
+                .longOpt("debug")
+                .build();
 
         final Option adb = Option.builder("a")
                 .hasArg(true)
@@ -144,20 +145,15 @@ public class DemoUiController {
                 .hasArg()
                 .build();
 
-//        final OptionGroup configurationGroup = new OptionGroup()
-//                .addOption(configurationFile)
-//                .addOption(configurationSave);
-
         options.addOption(help)
-//                .addOption(debug)
+                .addOption(debug)
                 .addOption(adb)
                 .addOption(demoAllowed)
                 .addOptionGroup(adbGroup)
                 .addOptionGroup(liveGroup)
                 .addOptionGroup(demoGroup)
                 .addOption(configurationFile)
-                .addOption(configurationSave)
-                /*.addOptionGroup(configurationGroup)*/;
+                .addOption(configurationSave);
     }
 
     private static void bars(@Nonnull Options options) {

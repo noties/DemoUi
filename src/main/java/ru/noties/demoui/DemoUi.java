@@ -27,6 +27,7 @@ public class DemoUi {
     private DemoUiState state;
     private DemoUiState fullState;
     private boolean live;
+    private boolean debug;
 
     private DemoUi(DemoUiController controller, String[] arguments) {
         this.controller = controller;
@@ -39,6 +40,10 @@ public class DemoUi {
     private void run() {
 
         if (state != null) {
+
+            if (state.debug() != null) {
+                this.debug = state.debug();
+            }
 
             // if have load -> do it now
             if (!TextUtils.isEmpty(state.loadConfiguration())) {
@@ -131,7 +136,9 @@ public class DemoUi {
         final List<String> commands = DemoUiCommandBuilder.commands(state);
 
         for (String command : commands) {
-//            System.out.printf("command: %s%n", command);
+            if (debug) {
+                System.out.printf("command: `%s`%n", command);
+            }
             Process process = null;
             try {
                 process = runtime.exec(command);

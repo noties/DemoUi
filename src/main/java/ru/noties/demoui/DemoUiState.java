@@ -17,6 +17,8 @@ public class DemoUiState {
     private transient String saveConfiguration;
     private transient String loadConfiguration;
 
+    private transient Boolean debug;
+
     public String adb() {
         return adb;
     }
@@ -88,6 +90,15 @@ public class DemoUiState {
 
     public DemoUiState loadConfiguration(String loadConfiguration) {
         this.loadConfiguration = loadConfiguration;
+        return this;
+    }
+
+    public Boolean debug() {
+        return debug;
+    }
+
+    public DemoUiState debug(Boolean debug) {
+        this.debug = debug;
         return this;
     }
 

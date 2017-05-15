@@ -29,6 +29,8 @@ abstract class DemoUiCommandLineParser {
         state.loadConfiguration(loadConfiguration(line));
         state.saveConfiguration(saveConfiguration(line));
 
+        state.debug(debug(line));
+
         return state;
     }
 
@@ -109,6 +111,16 @@ abstract class DemoUiCommandLineParser {
             out = null;
         }
         return out;
+    }
+
+    private static Boolean debug(CommandLine line) {
+        final Boolean debug;
+        if (line.hasOption("d")) {
+            debug = BooleanUtils.bool(line.getOptionValue("d"));
+        } else {
+            debug = null;
+        }
+        return debug;
     }
 
     private static DemoUiConfiguration configuration(CommandLine line) {
