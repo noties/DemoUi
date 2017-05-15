@@ -44,6 +44,12 @@ abstract class DemoUiCommandLineParser {
                 || demo(line);
         state.demoMode(demo);
 
+        state.adb(adb(line));
+        state.demoMode(demo(line));
+        state.demoEnabled(demoEnabled(line));
+        state.loadConfiguration(loadConfiguration(line));
+        state.saveConfiguration(saveConfiguration(line));
+
         return state;
     }
 
@@ -64,7 +70,58 @@ abstract class DemoUiCommandLineParser {
     }
 
     private static boolean demo(CommandLine line) {
-        return !line.hasOption("e");
+        return !line.hasOption("e") && !line.hasOption("le");
+    }
+
+    private static String adb(CommandLine line) {
+
+        final StringBuilder builder = new StringBuilder();
+        if (line.hasOption("a")) {
+            builder.append(line.getOptionValue("a"));
+        } else {
+            builder.append("adb");
+        }
+
+        if (line.hasOption("ad")) {
+            builder.append(" -d");
+        } else if (line.hasOption("ae")) {
+            builder.append(" -e");
+        } else if (line.hasOption("as")) {
+            builder.append(" -s ")
+                    .append(line.getOptionValue("as"));
+        }
+
+        return builder.toString();
+    }
+
+    private static Boolean demoEnabled(CommandLine line) {
+        final Boolean out;
+        if (line.hasOption("sda")) {
+            out = BooleanUtils.bool(line.getOptionValue("sda"));
+        } else {
+            out = null;
+        }
+        return out;
+    }
+
+    private static String loadConfiguration(CommandLine line) {
+        final String out;
+        if (line.hasOption("cf")) {
+            out = line.getOptionValue("cf");
+        } else {
+            out = null;
+        }
+        return out;
+    }
+
+    private static String saveConfiguration(CommandLine line) {
+        final String out;
+        if (line.hasOption("cs")) {
+            out = line.getOptionValue("cs");
+        } else {
+            out = null;
+        }
+        return out;
     }
 
     private static DemoUiConfiguration configuration(CommandLine line) {

@@ -5,6 +5,7 @@ import org.apache.commons.cli.HelpFormatter;
 import ru.noties.demoui.utils.ProcessRedirect;
 import ru.noties.demoui.utils.TextUtils;
 
+import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,30 +21,60 @@ public class DemoUi {
 
 
     private final DemoUiController controller;
+    private final DemoUiStateMerger merger;
+    private final DemoUiStatePersist persist;
+
     private BufferedReader reader;
     private DemoUiState state;
+    private DemoUiState fullState;
     private boolean live;
 
     private DemoUi(DemoUiController controller, String[] arguments) {
         this.controller = controller;
+        this.merger = new DemoUiStateMerger();
+        this.persist = new DemoUiStatePersist();
         this.state = controller.state(arguments, true);
+        this.fullState = new DemoUiState();
     }
 
     private void run() {
 
-        System.out.printf("state: %s%n", state);
-
         if (state != null) {
+
+            System.out.printf("load: `%s`, save: `%s`%n", state.loadConfiguration(), state.saveConfiguration());
+
+            // if have load -> do it now
+            if (!TextUtils.isEmpty(state.loadConfiguration())) {
+                // okay, here is what we do here:
+                // if load configuration is requested -> we load it and then apply all (optional) arguments that were passed
+                final DemoUiState load = persist.load(state.loadConfiguration());
+                if (load != null) {
+
+                    final String save = state.saveConfiguration();
+
+                    // we load a configuration and use it as a base state object on which we apply current state
+                    merger.merge(load, state);
+                    state = load;
+
+                    // hm, we need additionally apply transient fields...
+                    state.saveConfiguration(save);
+                }
+            }
+
+            // we save it for future use (and possible save of configuration)
+            // it doesn't make sense to do it if we are not in `live` mode thought
+            merger.merge(fullState, state);
+
+            if (!TextUtils.isEmpty(state.saveConfiguration())) {
+                // we save was requested -> do it now
+                persist.save(state.saveConfiguration(), fullState);
+            }
 
             if (state.showHelp()) {
                 showHelp();
             }
 
-            if (!state.demoMode()) {
-                exitDemoMode();
-            } else {
-                applyDemoUiState();
-            }
+            applyDemoUiState();
 
             // we need previous flag if we are in live mode
             // so, if there was an error in live mode -> continue execution, else finish as usual
@@ -96,13 +127,8 @@ public class DemoUi {
         formatter.printHelp("demoui", controller.options(), true);
     }
 
-    private void exitDemoMode() {
-
-    }
-
+    // we should send only changed values, but still save the whole state to be saved to a file
     private void applyDemoUiState() {
-
-//        System.out.printf("config: %s%n", state.configuration());
 
         final Runtime runtime = Runtime.getRuntime();
         final List<String> commands = DemoUiCommandBuilder.commands(state);
@@ -112,7 +138,7 @@ public class DemoUi {
             Process process = null;
             try {
                 process = runtime.exec(command);
-                ProcessRedirect.redirect(process.getInputStream());
+//                ProcessRedirect.redirect(process.getInputStream());
                 ProcessRedirect.redirect(process.getErrorStream());
                 process.waitFor();
             } catch (Throwable t) {

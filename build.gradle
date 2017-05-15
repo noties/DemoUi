@@ -1,9 +1,13 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id 'idea'
+}
+
+
 group 'ru.noties'
 version '1.0.0'
-
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'application'
 
 mainClassName = 'ru.noties.demoui.DemoUi'
 
@@ -17,6 +21,7 @@ dependencies {
 
     compile 'commons-cli:commons-cli:1.4'
     compile 'com.google.code.findbugs:jsr305:3.0.2'
+    compile 'com.google.code.gson:gson:2.8.0'
 
     testCompile 'junit:junit:4.12'
 }

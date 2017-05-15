@@ -62,14 +62,43 @@ public class DemoUiController {
 //                .longOpt("debug")
 //                .build();
 
-        final Option adb = Option.builder("adb")
+        final Option adb = Option.builder("a")
                 .hasArg(true)
                 .argName("adb-path")
                 .desc("Path to the `adb` executable, if not provided adb is considered to be found in PATH")
-                .longOpt("adb")
+                .longOpt("adb-path")
                 .build();
 
-        // now, we must add few adb specifics (device/emulator at least)
+        final Option adbDevice = Option.builder("ad")
+                .hasArg(false)
+                .desc("Uses physical device as a target for adb")
+                .longOpt("adb-device")
+                .build();
+
+        final Option adbEmulator = Option.builder("ae")
+                .hasArg(false)
+                .desc("Uses emulator as a target for adb")
+                .longOpt("adb-emulator")
+                .build();
+
+        final Option adbSerial = Option.builder("as")
+                .hasArg(true)
+                .argName("serial")
+                .desc("Uses device with serial number as a target for adb")
+                .longOpt("adb-serial")
+                .build();
+
+        final OptionGroup adbGroup = new OptionGroup()
+                .addOption(adbDevice)
+                .addOption(adbEmulator)
+                .addOption(adbSerial);
+
+        final Option demoAllowed = Option.builder("sda")
+                .hasArg(true)
+                .desc("Modifies global `sysui_demo_allowed` state, `1|true` to enable, everything else to disable")
+                .argName("enable")
+                .longOpt("sysui-demo-allowed")
+                .build();
 
         final Option liveStart = Option.builder("l")
                 .hasArg(false)
@@ -111,7 +140,7 @@ public class DemoUiController {
                 .hasArg()
                 .build();
 
-        final Option configurationSave = Option.builder("sc")
+        final Option configurationSave = Option.builder("cs")
                 .hasArg(true)
                 .argName("file")
                 .desc("Saves current demo configuration")
@@ -119,16 +148,20 @@ public class DemoUiController {
                 .hasArg()
                 .build();
 
-        final OptionGroup configurationGroup = new OptionGroup()
-                .addOption(configurationFile)
-                .addOption(configurationSave);
+//        final OptionGroup configurationGroup = new OptionGroup()
+//                .addOption(configurationFile)
+//                .addOption(configurationSave);
 
         options.addOption(help)
 //                .addOption(debug)
                 .addOption(adb)
+                .addOption(demoAllowed)
+                .addOptionGroup(adbGroup)
                 .addOptionGroup(liveGroup)
                 .addOptionGroup(demoGroup)
-                .addOptionGroup(configurationGroup);
+                .addOption(configurationFile)
+                .addOption(configurationSave)
+                /*.addOptionGroup(configurationGroup)*/;
     }
 
     private static void bars(@Nonnull Options options) {

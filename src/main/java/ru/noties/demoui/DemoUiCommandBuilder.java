@@ -3,32 +3,39 @@ package ru.noties.demoui;
 import ru.noties.demoui.options.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class DemoUiCommandBuilder {
 
-//    private static final String ENABLE = "%1$s shell settings put global sysui_demo_allowed 1";
+    private static final String ENABLE = "%1$s shell settings put global sysui_demo_allowed %2$d";
     private static final String ACTION = "%1$s shell am broadcast -a com.android.systemui.demo -e command %2$s";
 
     public static List<String> commands(DemoUiState state) {
-        final List<String> list;
+
+        final List<String> list = new ArrayList<>();
+        final String adb = state.adb();
         final DemoUiConfiguration configuration = state.configuration();
-        if (configuration != null) {
-            final String adb = "adb";
-             list = new ArrayList<>(2);
-//             list.add(String.format(ENABLE, "adb"));
-//             list.add(String.format(ACTION, "adb", "enter"));
-             bars(adb, configuration.bars(), list);
-             battery(adb, configuration.battery(), list);
-             clock(adb, configuration.clock(), list);
-             network(adb, configuration.network(), list);
-             notifications(adb, configuration.notifications(), list);
-             status(adb, configuration.status(), list);
-        } else {
-            //noinspection unchecked
-            list = Collections.EMPTY_LIST;
+
+        if (state.demoEnabled() != null) {
+            list.add(String.format(ENABLE, adb, state.demoEnabled() ? 1 : 0));
         }
+
+        if (configuration != null) {
+            bars(adb, configuration.bars(), list);
+            battery(adb, configuration.battery(), list);
+            clock(adb, configuration.clock(), list);
+            network(adb, configuration.network(), list);
+            notifications(adb, configuration.notifications(), list);
+            status(adb, configuration.status(), list);
+        }
+
+        // todo, when called with `le` (exit live), we still execute the `enter` command (and we do not want it)
+        if (list.size() == 0 && state.demoMode()) {
+            list.add(String.format(ACTION, adb, "enter"));
+        } else if (!state.demoMode()) {
+            list.add(String.format(ACTION, adb, "exit"));
+        }
+
         return list;
     }
 
@@ -221,5 +228,6 @@ public abstract class DemoUiCommandBuilder {
         }
     }
 
-    private DemoUiCommandBuilder() {}
+    private DemoUiCommandBuilder() {
+    }
 }
