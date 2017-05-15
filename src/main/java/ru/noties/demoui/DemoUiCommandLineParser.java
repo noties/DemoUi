@@ -319,20 +319,21 @@ abstract class DemoUiCommandLineParser {
         if (line.hasOption("nmd")) {
             mobileDatatype = line.getOptionValue("nmd");
             // validate
-            switch (mobileDatatype) {
-                case "1x":
-                case "3g":
-                case "4g":
-                case "e":
-                case "g":
-                case "h":
-                case "lte":
-                case "roam":
-                    // ok
-                    break;
-                default:
-                    throw new DemoUiException("Network mobile datatype is not recognized: " + mobileDatatype);
-            }
+            // we do not need to validate it, because non-existing values __hide__ this icon
+//            switch (mobileDatatype) {
+//                case "1x":
+//                case "3g":
+//                case "4g":
+//                case "e":
+//                case "g":
+//                case "h":
+//                case "lte":
+//                case "roam":
+//                    // ok
+//                    break;
+//                default:
+//                    throw new DemoUiException("Network mobile datatype is not recognized: " + mobileDatatype);
+//            }
         } else {
             mobileDatatype = null;
         }
